@@ -5,6 +5,7 @@ import MovieSeriesList from "./components/MovieSeriesList";
 import AddForm from "./components/AddForm";
 import { supabase } from './lib/supabase';
 import HomePage from "./components/HomePage";
+import WatchHistory from "./components/WatchHistory";
 
 const ALLOWED_USER_IDS = [364609948, 222222222];
 
@@ -64,31 +65,24 @@ export default function App() {
 
   const handleChangeStatus = async (id, newStatus) => {
     try {
-      if (newStatus === "Посмотрели") {
-        // Удаляем запись
-        const { error } = await supabase
-          .from('watchlist')
-          .delete()
-          .eq('id', id);
+      // Обновляем запись вместо удаления
+      const { error } = await supabase
+        .from('watchlist')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', id);
 
-        if (error) throw error;
-        
-        setItems(prevItems => prevItems.filter(item => item.id !== id));
-      } else {
-        // Обновляем статус
-        const { error } = await supabase
-          .from('watchlist')
-          .update({ status: newStatus })
-          .eq('id', id);
+      if (error) throw error;
 
-        if (error) throw error;
-
-        setItems(prevItems =>
-          prevItems.map(item =>
-            item.id === id ? { ...item, status: newStatus } : item
-          )
-        );
-      }
+      setItems(prevItems =>
+        prevItems.map(item =>
+          item.id === id 
+            ? { ...item, status: newStatus, updated_at: new Date().toISOString() } 
+            : item
+        )
+      );
     } catch (error) {
       console.error('Error updating status:', error);
     }
@@ -153,6 +147,30 @@ export default function App() {
               canEdit={canEdit}
             />
           }
+        />
+        <Route
+          path="/watched/movies"
+          element={
+            <MovieSeriesList
+              items={items.filter((item) => item.type === "movie" && item.status === "Посмотрели")}
+              onChangeStatus={handleChangeStatus}
+              canEdit={canEdit}
+            />
+          }
+        />
+        <Route
+          path="/watched/series"
+          element={
+            <MovieSeriesList
+              items={items.filter((item) => item.type === "series" && item.status === "Посмотрели")}
+              onChangeStatus={handleChangeStatus}
+              canEdit={canEdit}
+            />
+          }
+        />
+        <Route
+          path="/history"
+          element={<WatchHistory items={items} />}
         />
         {canEdit && (
           <Route path="/add" element={<AddForm onAddItem={handleAddItem} />} />

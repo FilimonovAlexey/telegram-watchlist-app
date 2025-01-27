@@ -13,6 +13,9 @@ export default function Navigation({ canEdit }) {
       <Link to="/series" className="nav-button">
         Сериалы
       </Link>
+      <Link to="/history" className="nav-button history-button">
+        История
+      </Link>
       {canEdit && (
         <Link to="/add" className="nav-button add-button">
           Добавить

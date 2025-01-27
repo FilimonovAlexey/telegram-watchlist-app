@@ -133,3 +133,24 @@
     background: none;
     margin-right: auto; /* Прижимает кнопку влево */
   }
+
+  .watched-date {
+    font-size: 0.8rem;
+    color: #666;
+    margin-left: 1rem;
+  }
+
+  .history-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+
+  .history-button {
+    background-color: #e0e0e0;
+    color: #333;
+  }
+
+  .history-button:hover {
+    background-color: #d0d0d0;
+  }
