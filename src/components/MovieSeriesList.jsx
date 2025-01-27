@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function MovieSeriesList({ items, onChangeStatus }) {
+export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
   const handleSelectChange = (e, id) => {
     const newStatus = e.target.value;
     onChangeStatus(id, newStatus);
@@ -21,15 +21,19 @@ export default function MovieSeriesList({ items, onChangeStatus }) {
         {items.map((item) => (
           <li key={item.id} className="item">
             <span className="title">{item.title}</span>
-            <select
-              value={item.status}
-              onChange={(e) => handleSelectChange(e, item.id)}
-              className="status-select"
-            >
-              <option value="Будем смотреть">Будем смотреть</option>
-              <option value="Смотрим">Смотрим</option>
-              <option value="Посмотрели">Посмотрели</option>
-            </select>
+            {canEdit ? (
+              <select
+                value={item.status}
+                onChange={(e) => handleSelectChange(e, item.id)}
+                className="status-select"
+              >
+                <option value="Будем смотреть">Будем смотреть</option>
+                <option value="Смотрим">Смотрим</option>
+                <option value="Посмотрели">Посмотрели</option>
+              </select>
+            ) : (
+              <span className="status-text">{item.status}</span>
+            )}
           </li>
         ))}
       </ul>

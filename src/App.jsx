@@ -144,6 +144,7 @@ export default function App() {
             <MovieSeriesList
               items={items.filter((item) => item.type === "movie")}
               onChangeStatus={handleChangeStatus}
+              canEdit={canEdit}
             />
           }
         />
@@ -153,6 +154,7 @@ export default function App() {
             <MovieSeriesList
               items={items.filter((item) => item.type === "series")}
               onChangeStatus={handleChangeStatus}
+              canEdit={canEdit}
             />
           }
         />

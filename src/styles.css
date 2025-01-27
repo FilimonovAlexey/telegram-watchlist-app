@@ -94,3 +94,10 @@
     border-radius: 8px;
     cursor: pointer;
   }
+
+  .status-text {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    font-size: 0.9rem;
+  }
