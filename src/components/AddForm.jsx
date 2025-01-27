@@ -10,15 +10,22 @@ export default function AddForm({ onAddItem }) {
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
-      if (title.length >= 3) {
+      if (title.length >= 2) {
         setIsLoading(true);
-        const results = await searchKinopoisk(title);
-        setSuggestions(results);
-        setIsLoading(false);
+        try {
+          const results = await searchKinopoisk(title);
+          console.log('Search results:', results);
+          setSuggestions(results);
+        } catch (error) {
+          console.error('Search error:', error);
+          setSuggestions([]);
+        } finally {
+          setIsLoading(false);
+        }
       } else {
         setSuggestions([]);
       }
-    }, 500); // Задержка для избежания частых запросов
+    }, 300);
 
     return () => clearTimeout(searchTimeout);
   }, [title]);
@@ -50,7 +57,8 @@ export default function AddForm({ onAddItem }) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Начните вводить название..."
+              placeholder="Введите минимум 2 символа..."
+              className="search-input"
             />
           </label>
           {isLoading && <div className="loading-indicator">Поиск...</div>}
@@ -63,7 +71,9 @@ export default function AddForm({ onAddItem }) {
                   className="suggestion-item"
                 >
                   <span className="suggestion-title">{suggestion.title}</span>
-                  <span className="suggestion-year">({suggestion.year})</span>
+                  {suggestion.year && (
+                    <span className="suggestion-year">({suggestion.year})</span>
+                  )}
                   {suggestion.rating && (
                     <span className="suggestion-rating">★ {suggestion.rating}</span>
                   )}
