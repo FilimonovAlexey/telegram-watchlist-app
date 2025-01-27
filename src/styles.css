@@ -24,11 +24,27 @@
   /* Навигация */
   .navigation {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 0.5rem;
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     padding: 0.5rem;
+  }
+  
+  .nav-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .nav-row.secondary {
+    justify-content: center;
+  }
+  
+  .home-button {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    background: none;
   }
   
   .nav-button {
@@ -38,6 +54,7 @@
     background-color: #e0e0e0;
     padding: 0.5rem 1rem;
     border-radius: 8px;
+    white-space: nowrap;
   }
   
   .add-button {
@@ -127,13 +144,6 @@
     margin-top: 1rem;
   }
 
-  .home-button {
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    background: none;
-    margin-right: auto; /* Прижимает кнопку влево */
-  }
-
   .watched-date {
     font-size: 0.8rem;
     color: #666;
@@ -148,7 +158,6 @@
 
   .history-button {
     background-color: #e0e0e0;
-    color: #333;
   }
 
   .history-button:hover {
