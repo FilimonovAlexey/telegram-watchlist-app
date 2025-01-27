@@ -7,26 +7,17 @@ export default function AddForm({ onAddItem }) {
   const [status, setStatus] = useState("Будем смотреть");
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
       if (title.length >= 2) {
         setIsLoading(true);
-        setError(null);
         try {
-          console.log('Starting search for:', title);
           const results = await searchKinopoisk(title);
-          console.log('Search results:', results);
           setSuggestions(results);
-          
-          // Отладка состояния подсказок
-          console.log('Suggestions state updated:', results.length, 'items');
         } catch (error) {
           console.error('Search error:', error);
-          setError(error.message);
-          setSuggestions([]);
         } finally {
           setIsLoading(false);
         }
@@ -38,25 +29,21 @@ export default function AddForm({ onAddItem }) {
     return () => clearTimeout(searchTimeout);
   }, [title]);
 
-  // Добавляем отладку для рендеринга подсказок
-  console.log('Current suggestions:', suggestions);
-  console.log('Is loading:', isLoading);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim()) return;
-    
+
+    // Создаем объект с данными для сохранения
     const newItem = {
       title,
       type,
       status,
-      // Добавляем новые поля из выбранного элемента
-      ...(selectedItem && {
-        release_date: selectedItem.releaseDate,
-        seasons_count: selectedItem.seasonsCount,
-        genres: selectedItem.genres,
-      }),
+      release_date: selectedItem?.release_date || null,
+      seasons_count: selectedItem?.seasons_count || null,
+      genres: selectedItem?.genres || [],
     };
+
+    console.log('Saving item with data:', newItem); // Отладочный вывод
     
     onAddItem(newItem);
     setTitle("");
@@ -67,6 +54,7 @@ export default function AddForm({ onAddItem }) {
   };
 
   const handleSuggestionClick = (suggestion) => {
+    console.log('Selected suggestion:', suggestion); // Отладочный вывод
     setTitle(suggestion.title);
     setType(suggestion.type);
     setSelectedItem(suggestion);
@@ -92,9 +80,8 @@ export default function AddForm({ onAddItem }) {
             />
           </label>
           {isLoading && <div className="loading-indicator">Поиск...</div>}
-          {error && <div className="error-message">Ошибка: {error}</div>}
           
-          {suggestions && suggestions.length > 0 && (
+          {suggestions.length > 0 && (
             <ul className="suggestions-list">
               {suggestions.map((suggestion) => (
                 <li
@@ -109,7 +96,7 @@ export default function AddForm({ onAddItem }) {
                     )}
                   </div>
                   <div className="suggestion-details">
-                    {suggestion.genres.length > 0 && (
+                    {suggestion.genres && suggestion.genres.length > 0 && (
                       <span className="suggestion-genres">
                         {suggestion.genres.slice(0, 2).join(', ')}
                       </span>
@@ -145,14 +132,14 @@ export default function AddForm({ onAddItem }) {
           Добавить
         </button>
       </form>
-      
+
       {selectedItem && (
         <div className="selected-item-details">
-          <p>Дата выхода: {selectedItem.releaseDate || 'Нет данных'}</p>
+          <p>Дата выхода: {selectedItem.release_date ? new Date(selectedItem.release_date).toLocaleDateString() : 'Нет данных'}</p>
           {selectedItem.type === 'series' && (
-            <p>Количество сезонов: {selectedItem.seasonsCount || 'Нет данных'}</p>
+            <p>Количество сезонов: {selectedItem.seasons_count || 'Нет данных'}</p>
           )}
-          <p>Жанры: {selectedItem.genres.join(', ') || 'Нет данных'}</p>
+          <p>Жанры: {selectedItem.genres?.length > 0 ? selectedItem.genres.join(', ') : 'Нет данных'}</p>
         </div>
       )}
     </div>
