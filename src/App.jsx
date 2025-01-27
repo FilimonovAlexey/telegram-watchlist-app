@@ -19,16 +19,25 @@ export default function App() {
   function getTelegramUserId() {
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
       const initData = window.Telegram.WebApp.initDataUnsafe;
-      return initData?.user?.id || null; 
+      const userId = initData?.user?.id;
+      console.log('Raw User ID:', userId);
+      return userId ? Number(userId) : null;
     }
-    return null; 
+    return null;
   }
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand(); // Расширяем окно приложения
     }
-    setUserId(getTelegramUserId());
+    const currentUserId = getTelegramUserId();
+    setUserId(currentUserId);
+    
+    // Отладочная информация
+    console.log('Current User ID:', currentUserId);
+    console.log('Allowed User IDs:', ALLOWED_USER_IDS);
+    console.log('Can Edit:', ALLOWED_USER_IDS.includes(currentUserId));
   }, []);
 
   const handleChangeStatus = (id, newStatus) => {
