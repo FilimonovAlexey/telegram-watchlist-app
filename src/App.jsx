@@ -4,6 +4,7 @@ import Navigation from "./components/Navigation";
 import MovieSeriesList from "./components/MovieSeriesList";
 import AddForm from "./components/AddForm";
 import { supabase } from './lib/supabase';
+import HomePage from "./components/HomePage";
 
 const ALLOWED_USER_IDS = [364609948, 222222222];
 
@@ -131,12 +132,7 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <div style={{ padding: "1rem" }}>
-              <h2>Главная страница</h2>
-              <p>Добро пожаловать! Нажмите в меню «Фильмы» или «Сериалы».</p>
-            </div>
-          }
+          element={<HomePage items={items} />}
         />
         <Route
           path="/movies"

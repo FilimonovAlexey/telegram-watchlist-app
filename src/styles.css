@@ -101,3 +101,28 @@
     background-color: #f0f0f0;
     font-size: 0.9rem;
   }
+
+  .see-more-link {
+    text-decoration: none;
+    color: #66b2ff;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .empty-message {
+    text-align: center;
+    color: #666;
+    padding: 1rem;
+    font-style: italic;
+  }
+
+  section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .item-list {
+    margin-top: 1rem;
+  }
