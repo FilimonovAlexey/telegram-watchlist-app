@@ -4,17 +4,11 @@ import Navigation from "./components/Navigation";
 import MovieSeriesList from "./components/MovieSeriesList";
 import AddForm from "./components/AddForm";
 
-const ALLOWED_USER_IDS = [364609948, 987654321];
-
-function getTelegramUserId() {
-  const initData = window.Telegram.WebApp.initDataUnsafe;
-  return initData?.user?.id; 
-}
+const ALLOWED_USER_IDS = [364609948, 222222222];
 
 export default function App() {
   const navigate = useNavigate();
   const [items, setItems] = useState([
-    // Пример начальных данных
     { id: 1, title: "Inception", type: "movie", status: "Будем смотреть" },
     { id: 2, title: "The Matrix", type: "movie", status: "Смотрим" },
     { id: 3, title: "Breaking Bad", type: "series", status: "Будем смотреть" },
@@ -22,15 +16,19 @@ export default function App() {
 
   const [userId, setUserId] = useState(null);
 
-  useEffect(() => {
-    // Имитируем получение userId
-    const id = getTelegramUserId();
-    setUserId(id);
+  function getTelegramUserId() {
+    if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
+      const initData = window.Telegram.WebApp.initDataUnsafe;
+      return initData?.user?.id || null; 
+    }
+    return null; 
+  }
 
-    // Инициализация Telegram WebApp (если нужно)
-    // if (window.Telegram?.WebApp) {
-    //   window.Telegram.WebApp.ready();
-    // }
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+    }
+    setUserId(getTelegramUserId());
   }, []);
 
   const handleChangeStatus = (id, newStatus) => {
@@ -59,6 +57,7 @@ export default function App() {
     navigate("/"); // После добавления — переход на главную (или куда нужно)
   };
 
+  // Проверяем, есть ли userId в списке разрешённых
   const canEdit = ALLOWED_USER_IDS.includes(userId);
 
   return (
