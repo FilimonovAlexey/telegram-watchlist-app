@@ -4,17 +4,11 @@ import Navigation from "./components/Navigation";
 import MovieSeriesList from "./components/MovieSeriesList";
 import AddForm from "./components/AddForm";
 
-// Имитируем IDs, которым разрешено добавлять/редактировать.
-// В реальном приложении получать userId нужно из Telegram.WebApp.initDataUnsafe и проверять подпись.
-const ALLOWED_USER_IDS = [123456789, 987654321]; // Ваши с девушкой user_id
+const ALLOWED_USER_IDS = [364609948, 987654321];
 
-// Пример функции получения user_id из Telegram WebApp (упрощённый пример):
 function getTelegramUserId() {
-  // В реальном приложении вы бы использовали:
-  // const initData = window.Telegram.WebApp.initDataUnsafe;
-  // return initData?.user?.id;
-  // Для примера "захардкодим":
-  return 123456789; // Будем считать, что текущий пользователь - это "я" (из ALLOWED_USER_IDS)
+  const initData = window.Telegram.WebApp.initDataUnsafe;
+  return initData?.user?.id; 
 }
 
 export default function App() {
