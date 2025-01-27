@@ -38,6 +38,7 @@ export default function App() {
         if (error) {
           console.error('Error fetching items:', error);
         } else {
+          console.log('Fetched data:', data);
           setItems(data || []);
         }
       } catch (error) {
@@ -90,10 +91,17 @@ export default function App() {
 
   const handleAddItem = async (newItem) => {
     try {
+      console.log('Saving item:', newItem);
+
       const { data, error } = await supabase
         .from('watchlist')
         .insert([{
-          ...newItem,
+          title: newItem.title,
+          type: newItem.type,
+          status: newItem.status,
+          release_date: newItem.release_date,
+          seasons_count: newItem.seasons_count,
+          genres: newItem.genres,
           created_at: new Date().toISOString()
         }])
         .select();
@@ -101,6 +109,7 @@ export default function App() {
       if (error) throw error;
 
       if (data) {
+        console.log('Saved data:', data);
         setItems(prevItems => [data[0], ...prevItems]);
         navigate(newItem.type === 'movie' ? '/movies' : '/series');
       }
