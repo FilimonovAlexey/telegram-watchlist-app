@@ -6,6 +6,7 @@ import AddForm from "./components/AddForm";
 import { supabase } from './lib/supabase';
 import HomePage from "./components/HomePage";
 import WatchHistory from "./components/WatchHistory";
+import DevPage from './components/DevPage';
 
 const ALLOWED_USER_IDS = [364609948, 222222222];
 
@@ -184,6 +185,16 @@ export default function App() {
         {canEdit && (
           <Route path="/add" element={<AddForm onAddItem={handleAddItem} />} />
         )}
+        <Route
+          path="/dev"
+          element={
+            <DevPage
+              items={items}
+              onAddItem={handleAddItem}
+              onChangeStatus={handleChangeStatus}
+            />
+          }
+        />
         <Route
           path="*"
           element={
