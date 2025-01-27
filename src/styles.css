@@ -24,8 +24,8 @@
   /* Навигация */
   .navigation {
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    gap: 0.5rem;
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     padding: 0.5rem;
@@ -125,4 +125,11 @@
 
   .item-list {
     margin-top: 1rem;
+  }
+
+  .home-button {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    background: none;
+    margin-right: auto; /* Прижимает кнопку влево */
   }
