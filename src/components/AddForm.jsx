@@ -8,6 +8,7 @@ export default function AddForm({ onAddItem }) {
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
@@ -44,16 +45,31 @@ export default function AddForm({ onAddItem }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim()) return;
-    onAddItem({ title, type, status });
+    
+    const newItem = {
+      title,
+      type,
+      status,
+      // Добавляем новые поля из выбранного элемента
+      ...(selectedItem && {
+        release_date: selectedItem.releaseDate,
+        seasons_count: selectedItem.seasonsCount,
+        genres: selectedItem.genres,
+      }),
+    };
+    
+    onAddItem(newItem);
     setTitle("");
     setType("movie");
     setStatus("Будем смотреть");
     setSuggestions([]);
+    setSelectedItem(null);
   };
 
   const handleSuggestionClick = (suggestion) => {
     setTitle(suggestion.title);
     setType(suggestion.type);
+    setSelectedItem(suggestion);
     setSuggestions([]);
   };
 
@@ -68,8 +84,8 @@ export default function AddForm({ onAddItem }) {
               type="text"
               value={title}
               onChange={(e) => {
-                console.log('Input changed:', e.target.value);
                 setTitle(e.target.value);
+                setSelectedItem(null); // Сбрасываем выбранный элемент при изменении ввода
               }}
               placeholder="Введите минимум 2 символа..."
               className="search-input"
@@ -78,8 +94,7 @@ export default function AddForm({ onAddItem }) {
           {isLoading && <div className="loading-indicator">Поиск...</div>}
           {error && <div className="error-message">Ошибка: {error}</div>}
           
-          {/* Добавляем проверку наличия подсказок */}
-          {suggestions && suggestions.length > 0 ? (
+          {suggestions && suggestions.length > 0 && (
             <ul className="suggestions-list">
               {suggestions.map((suggestion) => (
                 <li
@@ -87,17 +102,26 @@ export default function AddForm({ onAddItem }) {
                   onClick={() => handleSuggestionClick(suggestion)}
                   className="suggestion-item"
                 >
-                  <span className="suggestion-title">{suggestion.title}</span>
-                  {suggestion.year && (
-                    <span className="suggestion-year">({suggestion.year})</span>
-                  )}
-                  {suggestion.rating && (
-                    <span className="suggestion-rating">★ {suggestion.rating}</span>
-                  )}
+                  <div className="suggestion-main">
+                    <span className="suggestion-title">{suggestion.title}</span>
+                    {suggestion.year && (
+                      <span className="suggestion-year">({suggestion.year})</span>
+                    )}
+                  </div>
+                  <div className="suggestion-details">
+                    {suggestion.genres.length > 0 && (
+                      <span className="suggestion-genres">
+                        {suggestion.genres.slice(0, 2).join(', ')}
+                      </span>
+                    )}
+                    {suggestion.rating && (
+                      <span className="suggestion-rating">★ {suggestion.rating}</span>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
-          ) : null}
+          )}
         </div>
 
         <label>
@@ -121,6 +145,16 @@ export default function AddForm({ onAddItem }) {
           Добавить
         </button>
       </form>
+      
+      {selectedItem && (
+        <div className="selected-item-details">
+          <p>Дата выхода: {selectedItem.releaseDate || 'Нет данных'}</p>
+          {selectedItem.type === 'series' && (
+            <p>Количество сезонов: {selectedItem.seasonsCount || 'Нет данных'}</p>
+          )}
+          <p>Жанры: {selectedItem.genres.join(', ') || 'Нет данных'}</p>
+        </div>
+      )}
     </div>
   );
 }
