@@ -4,6 +4,10 @@ const BASE_URL = 'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-k
 export const searchKinopoisk = async (query) => {
   if (!query || query.length < 2) return []; // Начинаем поиск от 2 символов
   
+  // Добавляем отладочную информацию
+  console.log('API Key:', KINOPOISK_API_KEY);
+  console.log('Search Query:', query);
+  
   try {
     const normalizedQuery = query.trim().toLowerCase(); // Нормализуем запрос
     
@@ -18,12 +22,15 @@ export const searchKinopoisk = async (query) => {
       }
     );
 
+    // Добавляем отладку ответа
+    console.log('Response status:', response.status);
+    const data = await response.json();
+    console.log('API Response:', data);
+
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
     }
 
-    const data = await response.json();
-    
     if (!data.films) {
       console.log('No results found');
       return [];

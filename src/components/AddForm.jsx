@@ -7,17 +7,24 @@ export default function AddForm({ onAddItem }) {
   const [status, setStatus] = useState("Будем смотреть");
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
       if (title.length >= 2) {
         setIsLoading(true);
+        setError(null);
         try {
+          console.log('Starting search for:', title);
           const results = await searchKinopoisk(title);
           console.log('Search results:', results);
           setSuggestions(results);
+          
+          // Отладка состояния подсказок
+          console.log('Suggestions state updated:', results.length, 'items');
         } catch (error) {
           console.error('Search error:', error);
+          setError(error.message);
           setSuggestions([]);
         } finally {
           setIsLoading(false);
@@ -29,6 +36,10 @@ export default function AddForm({ onAddItem }) {
 
     return () => clearTimeout(searchTimeout);
   }, [title]);
+
+  // Добавляем отладку для рендеринга подсказок
+  console.log('Current suggestions:', suggestions);
+  console.log('Is loading:', isLoading);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,13 +67,19 @@ export default function AddForm({ onAddItem }) {
             <input
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                console.log('Input changed:', e.target.value);
+                setTitle(e.target.value);
+              }}
               placeholder="Введите минимум 2 символа..."
               className="search-input"
             />
           </label>
           {isLoading && <div className="loading-indicator">Поиск...</div>}
-          {suggestions.length > 0 && (
+          {error && <div className="error-message">Ошибка: {error}</div>}
+          
+          {/* Добавляем проверку наличия подсказок */}
+          {suggestions && suggestions.length > 0 ? (
             <ul className="suggestions-list">
               {suggestions.map((suggestion) => (
                 <li
@@ -80,7 +97,7 @@ export default function AddForm({ onAddItem }) {
                 </li>
               ))}
             </ul>
-          )}
+          ) : null}
         </div>
 
         <label>
