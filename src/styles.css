@@ -44,10 +44,10 @@
   }
   
   .home-button {
-    padding: 0.5rem;
     font-size: 1.2rem;
     background: none;
     flex: 0 0 auto; /* Домик не растягивается */
+    padding: 0 1rem; /* Одинаковые отступы по бокам */
   }
   
   .nav-button {
@@ -60,6 +60,10 @@
     white-space: nowrap;
     flex: 1; /* Кнопки занимают доступное пространство */
     text-align: center; /* Центрируем текст */
+    height: 36px; /* Фиксированная высота для всех кнопок */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .history-button, .add-button {
