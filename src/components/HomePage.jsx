@@ -3,15 +3,20 @@ import { Link } from "react-router-dom";
 
 export default function HomePage({ items }) {
   const movies = items
-    .filter((item) => item.type === "movie")
+    .filter((item) => item.type === "movie" && item.status !== "Посмотрели")
     .slice(0, 5);
   
   const series = items
-    .filter((item) => item.type === "series")
+    .filter((item) => item.type === "series" && item.status !== "Посмотрели")
     .slice(0, 5);
 
-  const hasMoreMovies = items.filter((item) => item.type === "movie").length > 5;
-  const hasMoreSeries = items.filter((item) => item.type === "series").length > 5;
+  const hasMoreMovies = items.filter(
+    (item) => item.type === "movie" && item.status !== "Посмотрели"
+  ).length > 5;
+  
+  const hasMoreSeries = items.filter(
+    (item) => item.type === "series" && item.status !== "Посмотрели"
+  ).length > 5;
 
   return (
     <div style={{ padding: "1rem" }}>

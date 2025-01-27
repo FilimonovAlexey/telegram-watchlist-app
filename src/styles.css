@@ -35,16 +35,19 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    width: 100%; /* Занимает всю ширину */
   }
   
   .nav-row.secondary {
     justify-content: center;
+    gap: 1rem; /* Увеличиваем расстояние между кнопками */
   }
   
   .home-button {
     padding: 0.5rem;
     font-size: 1.2rem;
     background: none;
+    flex: 0 0 auto; /* Домик не растягивается */
   }
   
   .nav-button {
@@ -55,6 +58,13 @@
     padding: 0.5rem 1rem;
     border-radius: 8px;
     white-space: nowrap;
+    flex: 1; /* Кнопки занимают доступное пространство */
+    text-align: center; /* Центрируем текст */
+  }
+  
+  .history-button, .add-button {
+    flex: 0 1 200px; /* Фиксированная максимальная ширина для кнопок нижнего ряда */
+    min-width: 120px; /* Минимальная ширина */
   }
   
   .add-button {
