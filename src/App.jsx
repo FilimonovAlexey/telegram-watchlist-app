@@ -3,18 +3,15 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import MovieSeriesList from "./components/MovieSeriesList";
 import AddForm from "./components/AddForm";
+import { supabase } from './lib/supabase';
 
 const ALLOWED_USER_IDS = [364609948, 222222222];
 
 export default function App() {
   const navigate = useNavigate();
-  const [items, setItems] = useState([
-    { id: 1, title: "Inception", type: "movie", status: "Будем смотреть" },
-    { id: 2, title: "The Matrix", type: "movie", status: "Смотрим" },
-    { id: 3, title: "Breaking Bad", type: "series", status: "Будем смотреть" },
-  ]);
-
+  const [items, setItems] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   function getTelegramUserId() {
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
@@ -26,55 +23,111 @@ export default function App() {
     return null;
   }
 
+  // Загрузка данных при инициализации
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('watchlist')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching items:', error);
+        } else {
+          setItems(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchItems();
+  }, []);
+
   useEffect(() => {
     if (typeof window !== "undefined" && window.Telegram?.WebApp) {
       window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand(); // Расширяем окно приложения
+      window.Telegram.WebApp.expand();
     }
     const currentUserId = getTelegramUserId();
     setUserId(currentUserId);
     
-    // Отладочная информация
     console.log('Current User ID:', currentUserId);
     console.log('Allowed User IDs:', ALLOWED_USER_IDS);
     console.log('Can Edit:', ALLOWED_USER_IDS.includes(currentUserId));
   }, []);
 
-  const handleChangeStatus = (id, newStatus) => {
-    setItems((prevItems) =>
-      prevItems
-        .map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                status: newStatus,
-              }
-            : item
-        )
-        // Если статус "Посмотрели" — удаляем фильм/сериал
-        .filter((item) => item.status !== "Посмотрели")
-    );
+  const handleChangeStatus = async (id, newStatus) => {
+    try {
+      if (newStatus === "Посмотрели") {
+        // Удаляем запись
+        const { error } = await supabase
+          .from('watchlist')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        
+        setItems(prevItems => prevItems.filter(item => item.id !== id));
+      } else {
+        // Обновляем статус
+        const { error } = await supabase
+          .from('watchlist')
+          .update({ status: newStatus })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        setItems(prevItems =>
+          prevItems.map(item =>
+            item.id === id ? { ...item, status: newStatus } : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
   };
 
-  const handleAddItem = (newItem) => {
-    const maxId = items.reduce((acc, curr) => (curr.id > acc ? curr.id : acc), 0);
-    const itemToAdd = {
-      ...newItem,
-      id: maxId + 1,
-    };
-    setItems((prev) => [...prev, itemToAdd]);
-    navigate("/"); // После добавления — переход на главную (или куда нужно)
+  const handleAddItem = async (newItem) => {
+    try {
+      const { data, error } = await supabase
+        .from('watchlist')
+        .insert([{
+          ...newItem,
+          created_at: new Date().toISOString()
+        }])
+        .select();
+
+      if (error) throw error;
+
+      if (data) {
+        setItems(prevItems => [data[0], ...prevItems]);
+        navigate(newItem.type === 'movie' ? '/movies' : '/series');
+      }
+    } catch (error) {
+      console.error('Error adding item:', error);
+    }
   };
 
-  // Проверяем, есть ли userId в списке разрешённых
   const canEdit = ALLOWED_USER_IDS.includes(userId);
+
+  if (isLoading) {
+    return (
+      <div style={{ padding: "1rem", textAlign: "center" }}>
+        Загрузка...
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
-      {/* Навигация (Фильмы / Сериалы / Добавить) */}
       <Navigation canEdit={canEdit} />
 
-      {/* Роутинг */}
       <Routes>
         <Route
           path="/"
