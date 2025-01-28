@@ -7,6 +7,7 @@ import { supabase } from './lib/supabase';
 import HomePage from "./components/HomePage";
 import WatchHistory from "./components/WatchHistory";
 import DevPage from './components/DevPage';
+import MovieForEvening from './components/MovieForEvening';
 
 const ALLOWED_USER_IDS = [364609948, 210529767];
 
@@ -225,6 +226,10 @@ export default function App() {
                 onChangeStatus={handleChangeStatus}
               />
             }
+          />
+          <Route
+            path="/evening"
+            element={<MovieForEvening />}
           />
           <Route
             path="*"

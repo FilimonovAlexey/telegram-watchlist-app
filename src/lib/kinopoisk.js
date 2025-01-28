@@ -49,4 +49,103 @@ export const searchKinopoisk = async (query) => {
     console.error('Error searching Kinopoisk:', error);
     return [];
   }
+};
+
+export const searchRandomMovie = {
+  getGenres: async () => {
+    try {
+      const response = await fetch(
+        'https://api.kinopoisk.dev/v1/movie/possible-values-by-field?field=genres.name',
+        {
+          headers: {
+            'X-API-KEY': KINOPOISK_API_KEY,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch genres');
+      
+      const data = await response.json();
+      return data.map(genre => genre.name);
+    } catch (error) {
+      console.error('Error fetching genres:', error);
+      return [];
+    }
+  },
+
+  getCountries: async () => {
+    try {
+      const response = await fetch(
+        'https://api.kinopoisk.dev/v1/movie/possible-values-by-field?field=countries.name',
+        {
+          headers: {
+            'X-API-KEY': KINOPOISK_API_KEY,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch countries');
+      
+      const data = await response.json();
+      return data.map(country => country.name);
+    } catch (error) {
+      console.error('Error fetching countries:', error);
+      return [];
+    }
+  },
+
+  getRandomMovie: async (filters) => {
+    try {
+      let url = 'https://api.kinopoisk.dev/v1.4/movie';
+      
+      const params = new URLSearchParams({
+        'year': `${filters.yearFrom}-${filters.yearTo}`,
+        'type': filters.type === 'series' ? 'tv-series' : 'movie',
+        'page': '1',
+        'limit': '100'
+      });
+
+      if (filters.genre) {
+        params.append('genres.name', filters.genre);
+      }
+
+      if (filters.country) {
+        params.append('countries.name', filters.country);
+      }
+
+      const response = await fetch(`${url}?${params}`, {
+        headers: {
+          'X-API-KEY': KINOPOISK_API_KEY,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch movies');
+
+      const data = await response.json();
+      
+      if (!data.docs || data.docs.length === 0) {
+        throw new Error('No movies found');
+      }
+
+      // Выбираем случайный фильм из результатов
+      const randomIndex = Math.floor(Math.random() * data.docs.length);
+      const movie = data.docs[randomIndex];
+
+      return {
+        id: movie.id,
+        title: movie.name || movie.alternativeName,
+        year: movie.year,
+        rating: movie.rating?.kp?.toFixed(1) || 'Нет данных',
+        countries: movie.countries?.map(c => c.name) || ['Нет данных'],
+        description: movie.description || 'Описание отсутствует',
+        poster: movie.poster?.url || null
+      };
+    } catch (error) {
+      console.error('Error fetching random movie:', error);
+      throw error;
+    }
+  }
 }; 

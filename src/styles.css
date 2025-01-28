@@ -423,3 +423,135 @@
     font-size: 1.2rem;
     color: #666;
   }
+
+  .movie-evening-container {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .filters-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .filter-group {
+    margin: 1rem 0;
+  }
+
+  .filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .filter-group input,
+  .filter-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  .search-button,
+  .search-again-button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .search-button:hover,
+  .search-again-button:hover {
+    background-color: #0056b3;
+  }
+
+  .movie-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .movie-poster {
+    width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+  }
+
+  .movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .movie-info {
+    padding: 1.5rem;
+  }
+
+  .movie-details {
+    margin: 1rem 0;
+    color: #666;
+  }
+
+  .movie-description {
+    margin: 1rem 0;
+    line-height: 1.6;
+  }
+
+  .search-again-button {
+    margin: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .movie-evening-container {
+      padding: 0.5rem;
+    }
+    
+    .filters-container,
+    .movie-card {
+      border-radius: 0;
+    }
+  }
+
+  .clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .clickable:hover {
+    transform: scale(1.02);
+  }
+
+  .item-poster.clickable::after,
+  .movie-poster.clickable::after {
+    content: '🔗';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .item-poster.clickable:hover::after,
+  .movie-poster.clickable:hover::after {
+    opacity: 1;
+  }
+
+  .item-poster,
+  .movie-poster {
+    position: relative;
+  }

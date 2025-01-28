@@ -8,6 +8,10 @@ export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
     onChangeStatus(id, newStatus);
   };
 
+  const handlePosterClick = (id) => {
+    window.open(`https://www.kinopoisk.ru/film/${id}`, '_blank');
+  };
+
   if (items.length === 0) {
     return (
       <div style={{ padding: "1rem" }}>
@@ -27,7 +31,11 @@ export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
             <li key={item.id} className="item-card">
               <div className="item-content">
                 {item.poster && (
-                  <div className="item-poster">
+                  <div 
+                    className="item-poster clickable"
+                    onClick={() => handlePosterClick(item.id)}
+                    title="Открыть на Кинопоиске"
+                  >
                     <img src={item.poster} alt={item.title} />
                   </div>
                 )}

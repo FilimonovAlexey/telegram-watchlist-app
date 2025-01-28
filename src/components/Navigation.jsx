@@ -14,6 +14,9 @@ export default function Navigation({ canEdit }) {
         <Link to="/series" className="nav-button">
           Сериалы
         </Link>
+        <Link to="/evening" className="nav-button">
+          Фильм на вечер
+        </Link>
       </div>
       <div className="nav-row secondary">
         <Link to="/history" className="nav-button history-button">
