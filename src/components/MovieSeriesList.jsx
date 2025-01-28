@@ -12,7 +12,9 @@ export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
     window.open(`https://www.kinopoisk.ru/film/${id}`, '_blank');
   };
 
-  if (items.length === 0) {
+  const filteredItems = items.filter(item => item.status !== 'Удалить');
+
+  if (filteredItems.length === 0) {
     return (
       <div style={{ padding: "1rem" }}>
         <h2>Список пуст</h2>
@@ -24,7 +26,7 @@ export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
     <div style={{ padding: "1rem" }}>
       <h2>Список ({items[0]?.type === "movie" ? "Фильмы" : "Сериалы"})</h2>
       <ul className="item-list">
-        {items.map((item) => {
+        {filteredItems.map((item) => {
           console.log('Rendering item:', item); // Отладочный вывод для каждого элемента
           
           return (
@@ -52,6 +54,7 @@ export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
                         <option value="Будем смотреть">Будем смотреть</option>
                         <option value="Смотрим">Смотрим</option>
                         <option value="Посмотрели">Посмотрели</option>
+                        <option value="Удалить">Удалить</option>
                       </select>
                     ) : (
                       <span className="status-text">{item.status}</span>

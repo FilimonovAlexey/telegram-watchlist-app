@@ -33,14 +33,32 @@
   
   .nav-row {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
-    width: 100%; /* Занимает всю ширину */
+    width: 100%;
+  }
+  
+  .nav-row .nav-button {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem;
+    text-decoration: none;
+    color: #333;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .nav-row .nav-button:hover {
+    background-color: #e0e0e0;
   }
   
   .nav-row.secondary {
     justify-content: center;
-    gap: 1rem; /* Увеличиваем расстояние между кнопками */
+    margin-top: 0.5rem;
+  }
+  
+  .nav-row.secondary .nav-button {
+    flex: 0 1 200px;
   }
   
   .home-button {
@@ -93,7 +111,17 @@
   }
   
   .status-select {
-    padding: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .status-select option[value="Удалить"] {
+    color: #ff4444;
+    font-weight: bold;
   }
   
   /* Форма добавления */

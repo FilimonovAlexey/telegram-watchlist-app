@@ -75,24 +75,32 @@ export default function App() {
 
   const handleChangeStatus = async (id, newStatus) => {
     try {
-      // Обновляем запись вместо удаления
-      const { error } = await supabase
-        .from('watchlist')
-        .update({ 
-          status: newStatus,
-          updated_at: new Date().toISOString() 
-        })
-        .eq('id', id);
+      if (newStatus === 'Удалить') {
+        // Удаляем запись из базы данных
+        const { error } = await supabase
+          .from('watchlist')
+          .delete()
+          .match({ id });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setItems(prevItems =>
-        prevItems.map(item =>
-          item.id === id 
-            ? { ...item, status: newStatus, updated_at: new Date().toISOString() } 
-            : item
-        )
-      );
+        // Удаляем элемент из локального состояния
+        setItems(prevItems => prevItems.filter(item => item.id !== id));
+      } else {
+        // Обновляем статус как обычно
+        const { error } = await supabase
+          .from('watchlist')
+          .update({ status: newStatus })
+          .match({ id });
+
+        if (error) throw error;
+
+        setItems(prevItems =>
+          prevItems.map(item =>
+            item.id === id ? { ...item, status: newStatus } : item
+          )
+        );
+      }
     } catch (error) {
       console.error('Error updating status:', error);
     }
