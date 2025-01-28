@@ -23,12 +23,10 @@
   
   /* Навигация */
   .navigation {
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    padding: 0.5rem;
   }
   
   .nav-row {
@@ -37,7 +35,7 @@
     width: 100%;
   }
   
-  .nav-row .nav-button {
+  .nav-button {
     flex: 1;
     text-align: center;
     padding: 0.8rem;
@@ -48,8 +46,31 @@
     transition: background-color 0.2s;
   }
   
-  .nav-row .nav-button:hover {
+  .nav-button:hover {
     background-color: #e0e0e0;
+  }
+  
+  .home-button {
+    flex: 0 0 50px;
+    font-size: 1.2rem;
+  }
+  
+  .add-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .add-button:hover {
+    background-color: #45a049;
+  }
+  
+  .evening-button {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .evening-button:hover {
+    background-color: #1976D2;
   }
   
   .nav-row.secondary {
@@ -59,29 +80,6 @@
   
   .nav-row.secondary .nav-button {
     flex: 0 1 200px;
-  }
-  
-  .home-button {
-    font-size: 1.2rem;
-    background: none;
-    flex: 0 0 auto; /* Домик не растягивается */
-    padding: 0 1rem; /* Одинаковые отступы по бокам */
-  }
-  
-  .nav-button {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-    background-color: #e0e0e0;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    white-space: nowrap;
-    flex: 1; /* Кнопки занимают доступное пространство */
-    text-align: center; /* Центрируем текст */
-    height: 36px; /* Фиксированная высота для всех кнопок */
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   
   .history-button, .add-button {

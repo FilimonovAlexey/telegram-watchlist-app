@@ -167,7 +167,22 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={<HomePage items={items} />}
+            element={
+              <div style={{ padding: "1rem" }}>
+                <h2>Добро пожаловать!</h2>
+                <p>Выберите раздел для просмотра</p>
+              </div>
+            }
+          />
+          <Route
+            path="/add"
+            element={
+              <AddForm 
+                onAddItem={handleAddItem}
+                error={error}
+                onErrorClear={() => setError(null)}
+              />
+            }
           />
           <Route
             path="/movies"
@@ -186,52 +201,6 @@ export default function App() {
                 items={items.filter((item) => item.type === "series")}
                 onChangeStatus={handleChangeStatus}
                 canEdit={canEdit}
-              />
-            }
-          />
-          <Route
-            path="/watched/movies"
-            element={
-              <MovieSeriesList
-                items={items.filter((item) => item.type === "movie" && item.status === "Посмотрели")}
-                onChangeStatus={handleChangeStatus}
-                canEdit={canEdit}
-              />
-            }
-          />
-          <Route
-            path="/watched/series"
-            element={
-              <MovieSeriesList
-                items={items.filter((item) => item.type === "series" && item.status === "Посмотрели")}
-                onChangeStatus={handleChangeStatus}
-                canEdit={canEdit}
-              />
-            }
-          />
-          <Route
-            path="/history"
-            element={<WatchHistory items={items} />}
-          />
-          {canEdit && (
-            <Route
-              path="/add"
-              element={
-                <AddForm
-                  onAddItem={handleAddItem}
-                  error={error}
-                  onErrorClear={() => setError(null)}
-                />
-              }
-            />
-          )}
-          <Route
-            path="/dev"
-            element={
-              <DevPage
-                items={items}
-                onAddItem={handleAddItem}
-                onChangeStatus={handleChangeStatus}
               />
             }
           />
