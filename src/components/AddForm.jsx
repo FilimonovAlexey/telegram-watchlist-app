@@ -33,18 +33,16 @@ export default function AddForm({ onAddItem }) {
     e.preventDefault();
     if (!title.trim()) return;
 
-    // Создаем объект с данными для сохранения
     const newItem = {
       title,
       type,
       status,
-      release_date: selectedItem?.release_date || null,
-      seasons_count: selectedItem?.seasons_count || null,
+      year: selectedItem?.year,
       genres: selectedItem?.genres || [],
+      countries: selectedItem?.countries || [],
+      poster: selectedItem?.poster
     };
 
-    console.log('Saving item with data:', newItem); // Отладочный вывод
-    
     onAddItem(newItem);
     setTitle("");
     setType("movie");

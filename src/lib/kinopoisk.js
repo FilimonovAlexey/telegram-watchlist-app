@@ -8,14 +8,10 @@ console.log('Environment check:', {
 });
 
 export const searchKinopoisk = async (query) => {
-  if (!query || query.length < 2) return []; // Начинаем поиск от 2 символов
-  
-  // Добавляем отладочную информацию
-  console.log('API Key:', KINOPOISK_API_KEY);
-  console.log('Search Query:', query);
+  if (!query || query.length < 2) return [];
   
   try {
-    const normalizedQuery = query.trim().toLowerCase(); // Нормализуем запрос
+    const normalizedQuery = query.trim().toLowerCase();
     
     const response = await fetch(
       `${BASE_URL}?query=${encodeURIComponent(normalizedQuery)}`, 
@@ -28,8 +24,6 @@ export const searchKinopoisk = async (query) => {
       }
     );
 
-    // Добавляем отладку ответа
-    console.log('Search Response status:', response.status);
     if (!response.ok) {
       throw new Error(`API error: ${response.status} - ${await response.text()}`);
     }
@@ -42,46 +36,19 @@ export const searchKinopoisk = async (query) => {
       return [];
     }
 
-    // Получаем детальную информацию для каждого фильма
-    const detailedResults = await Promise.all(
-      data.docs.slice(0, 5).map(async (movie) => {
-        try {
-          const detailsResponse = await fetch(
-            `${DETAILS_URL}/${movie.id}`,
-            {
-              headers: {
-                'X-API-KEY': KINOPOISK_API_KEY,
-                'Content-Type': 'application/json',
-              },
-            }
-          );
-          const details = await detailsResponse.json();
-          console.log('Details for film:', details);
-
-          return {
-            id: movie.id,
-            title: movie.name || movie.alternativeName,
-            type: movie.type === 'movie' ? 'movie' : 'series',
-            year: movie.year,
-            rating: movie.rating?.kp,
-            release_date: movie.premiere?.world || movie.premiere?.russia,
-            seasons_count: movie.seasonsInfo?.length || null,
-            genres: movie.genres?.map(g => g.name) || [],
-          };
-        } catch (error) {
-          console.error('Error fetching details for film:', movie.id, error);
-          return null;
-        }
-      })
-    );
-
-    return detailedResults.filter(Boolean);
+    return data.docs.map(movie => ({
+      id: movie.id,
+      title: movie.name || movie.alternativeName,
+      type: movie.type === 'movie' ? 'movie' : 'series',
+      year: movie.year,
+      rating: movie.rating?.kp,
+      genres: movie.genres?.map(g => g.name) || [],
+      countries: movie.countries?.map(c => c.name) || [],
+      poster: movie.poster?.previewUrl || movie.poster?.url || null
+    }));
 
   } catch (error) {
     console.error('Error searching Kinopoisk:', error);
-    if (error.message.includes('401')) {
-      console.error('API Key issue. Please check your API key');
-    }
     return [];
   }
 }; 

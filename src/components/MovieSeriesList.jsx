@@ -25,41 +25,51 @@ export default function MovieSeriesList({ items, onChangeStatus, canEdit }) {
           
           return (
             <li key={item.id} className="item-card">
-              <div className="item-main">
-                <span className="title">{item.title}</span>
-                {canEdit ? (
-                  <select
-                    value={item.status}
-                    onChange={(e) => handleSelectChange(e, item.id)}
-                    className="status-select"
-                  >
-                    <option value="Будем смотреть">Будем смотреть</option>
-                    <option value="Смотрим">Смотрим</option>
-                    <option value="Посмотрели">Посмотрели</option>
-                  </select>
-                ) : (
-                  <span className="status-text">{item.status}</span>
-                )}
-              </div>
-              
-              <div className="item-details">
-                {item.release_date && (
-                  <span className="detail-item">
-                    📅 {new Date(item.release_date).toLocaleDateString()}
-                  </span>
+              <div className="item-content">
+                {item.poster && (
+                  <div className="item-poster">
+                    <img src={item.poster} alt={item.title} />
+                  </div>
                 )}
                 
-                {item.type === 'series' && item.seasons_count && (
-                  <span className="detail-item">
-                    📺 {item.seasons_count} сезон{item.seasons_count > 1 ? 'ов' : ''}
-                  </span>
-                )}
-                
-                {item.genres && item.genres.length > 0 && (
-                  <span className="detail-item genres">
-                    🎭 {item.genres.slice(0, 3).join(', ')}
-                  </span>
-                )}
+                <div className="item-info">
+                  <div className="item-main">
+                    <span className="title">{item.title}</span>
+                    {canEdit ? (
+                      <select
+                        value={item.status}
+                        onChange={(e) => handleSelectChange(e, item.id)}
+                        className="status-select"
+                      >
+                        <option value="Будем смотреть">Будем смотреть</option>
+                        <option value="Смотрим">Смотрим</option>
+                        <option value="Посмотрели">Посмотрели</option>
+                      </select>
+                    ) : (
+                      <span className="status-text">{item.status}</span>
+                    )}
+                  </div>
+                  
+                  <div className="item-details">
+                    {item.year && (
+                      <span className="detail-item">
+                        📅 {item.year}
+                      </span>
+                    )}
+                    
+                    {item.countries && item.countries.length > 0 && (
+                      <span className="detail-item">
+                        🌍 {item.countries.slice(0, 2).join(', ')}
+                      </span>
+                    )}
+                    
+                    {item.genres && item.genres.length > 0 && (
+                      <span className="detail-item genres">
+                        🎭 {item.genres.slice(0, 3).join(', ')}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </li>
           );
