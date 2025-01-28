@@ -604,3 +604,14 @@
   .category-section h2 {
     margin: 0;
   }
+
+  .nav-row .add-button {
+    width: 100%;
+    flex: none;
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .nav-row .add-button:hover {
+    background-color: #45a049;
+  }

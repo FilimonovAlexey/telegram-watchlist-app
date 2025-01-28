@@ -13,7 +13,7 @@ export default function Navigation({ canEdit }) {
       </div>
       {canEdit && (
         <div className="nav-row">
-          <Link to="/add" className="nav-button add-button">Добавить</Link>
+          <Link to="/add" className="nav-button add-button" style={{ width: '100%' }}>Добавить</Link>
         </div>
       )}
       <div className="nav-row">
