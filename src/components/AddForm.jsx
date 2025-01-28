@@ -8,6 +8,18 @@ export default function AddForm({ onAddItem, error, onErrorClear }) {
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [localError, setLocalError] = useState(error);
+
+  useEffect(() => {
+    setLocalError(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (localError) {
+      onErrorClear();
+      setLocalError(null);
+    }
+  }, [title]);
 
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
@@ -29,13 +41,7 @@ export default function AddForm({ onAddItem, error, onErrorClear }) {
     return () => clearTimeout(searchTimeout);
   }, [title]);
 
-  useEffect(() => {
-    if (error) {
-      onErrorClear();
-    }
-  }, [title]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
@@ -49,14 +55,15 @@ export default function AddForm({ onAddItem, error, onErrorClear }) {
       poster: selectedItem?.poster
     };
 
-    console.log('Saving item with data:', newItem);
+    const success = await onAddItem(newItem);
     
-    onAddItem(newItem);
-    setTitle("");
-    setType("movie");
-    setStatus("Будем смотреть");
-    setSuggestions([]);
-    setSelectedItem(null);
+    if (success) {
+      setTitle("");
+      setType("movie");
+      setStatus("Будем смотреть");
+      setSuggestions([]);
+      setSelectedItem(null);
+    }
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -70,7 +77,7 @@ export default function AddForm({ onAddItem, error, onErrorClear }) {
   return (
     <div style={{ padding: "1rem" }}>
       <h2>Добавить Фильм/Сериал</h2>
-      {error && <div className="error-message">{error}</div>}
+      {localError && <div className="error-message">{localError}</div>}
       <form onSubmit={handleSubmit} className="add-form">
         <div className="search-container">
           <label>
@@ -142,10 +149,8 @@ export default function AddForm({ onAddItem, error, onErrorClear }) {
 
       {selectedItem && (
         <div className="selected-item-details">
-          <p>Дата выхода: {selectedItem.release_date ? new Date(selectedItem.release_date).toLocaleDateString() : 'Нет данных'}</p>
-          {selectedItem.type === 'series' && (
-            <p>Количество сезонов: {selectedItem.seasons_count || 'Нет данных'}</p>
-          )}
+          <p>Год выпуска: {selectedItem.year || 'Нет данных'}</p>
+          <p>Страна: {selectedItem.countries?.length > 0 ? selectedItem.countries.join(', ') : 'Нет данных'}</p>
           <p>Жанры: {selectedItem.genres?.length > 0 ? selectedItem.genres.join(', ') : 'Нет данных'}</p>
         </div>
       )}

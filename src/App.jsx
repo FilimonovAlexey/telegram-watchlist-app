@@ -16,6 +16,7 @@ export default function App() {
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const canEdit = useCanEdit();
 
   function getTelegramUserId() {
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
@@ -93,15 +94,16 @@ export default function App() {
 
   const handleAddItem = async (newItem) => {
     try {
-      // Проверяем на дубликаты
+      // Сначала проверяем на дубликаты
       const isDuplicate = items.some(item => 
         item.title.toLowerCase() === newItem.title.toLowerCase() && 
         item.type === newItem.type
       );
 
       if (isDuplicate) {
-        setError(`${newItem.type === 'movie' ? 'Фильм' : 'Сериал'} "${newItem.title}" уже есть в вашем списке`);
-        return;
+        const message = `${newItem.type === 'movie' ? 'Фильм' : 'Сериал'} "${newItem.title}" уже есть в вашем списке`;
+        setError(message);
+        return false; // Возвращаем false, чтобы показать, что добавление не удалось
       }
 
       const { data, error: supabaseError } = await supabase
@@ -124,14 +126,14 @@ export default function App() {
         setItems(prevItems => [data[0], ...prevItems]);
         setError(null);
         navigate(newItem.type === 'movie' ? '/movies' : '/series');
+        return true; // Возвращаем true, чтобы показать успешное добавление
       }
     } catch (error) {
       console.error('Error adding item:', error);
       setError('Произошла ошибка при добавлении. Попробуйте позже.');
+      return false;
     }
   };
-
-  const canEdit = ALLOWED_USER_IDS.includes(userId);
 
   if (isLoading) {
     return (
