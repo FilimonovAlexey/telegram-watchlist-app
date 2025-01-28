@@ -133,10 +133,8 @@ export default function AddForm({ onAddItem }) {
 
       {selectedItem && (
         <div className="selected-item-details">
-          <p>Дата выхода: {selectedItem.release_date ? new Date(selectedItem.release_date).toLocaleDateString() : 'Нет данных'}</p>
-          {selectedItem.type === 'series' && (
-            <p>Количество сезонов: {selectedItem.seasons_count || 'Нет данных'}</p>
-          )}
+          <p>Год выпуска: {selectedItem.year || 'Нет данных'}</p>
+          <p>Страна: {selectedItem.countries?.length > 0 ? selectedItem.countries.join(', ') : 'Нет данных'}</p>
           <p>Жанры: {selectedItem.genres?.length > 0 ? selectedItem.genres.join(', ') : 'Нет данных'}</p>
         </div>
       )}
