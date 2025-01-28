@@ -28,28 +28,25 @@ export default function App() {
     return null;
   }
 
-  // Загрузка данных при инициализации
   useEffect(() => {
-    async function fetchItems() {
+    const fetchItems = async () => {
       try {
         setIsLoading(true);
-        const { data, error } = await supabase
+        const { data, error: supabaseError } = await supabase
           .from('watchlist')
           .select('*')
           .order('created_at', { ascending: false });
 
-        if (error) {
-          console.error('Error fetching items:', error);
-        } else {
-          console.log('Fetched data:', data);
-          setItems(data || []);
-        }
+        if (supabaseError) throw supabaseError;
+
+        setItems(data || []);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching items:', error);
+        setError('Ошибка при загрузке данных');
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     fetchItems();
   }, []);
@@ -135,98 +132,95 @@ export default function App() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div style={{ padding: "1rem", textAlign: "center" }}>
-        Загрузка...
-      </div>
-    );
-  }
-
   return (
     <div className="app-container">
       <Navigation canEdit={canEdit} />
-      {error && <div className="error-message">{error}</div>}
-      <Routes>
-        <Route
-          path="/"
-          element={<HomePage items={items} />}
-        />
-        <Route
-          path="/movies"
-          element={
-            <MovieSeriesList
-              items={items.filter((item) => item.type === "movie")}
-              onChangeStatus={handleChangeStatus}
-              canEdit={canEdit}
-            />
-          }
-        />
-        <Route
-          path="/series"
-          element={
-            <MovieSeriesList
-              items={items.filter((item) => item.type === "series")}
-              onChangeStatus={handleChangeStatus}
-              canEdit={canEdit}
-            />
-          }
-        />
-        <Route
-          path="/watched/movies"
-          element={
-            <MovieSeriesList
-              items={items.filter((item) => item.type === "movie" && item.status === "Посмотрели")}
-              onChangeStatus={handleChangeStatus}
-              canEdit={canEdit}
-            />
-          }
-        />
-        <Route
-          path="/watched/series"
-          element={
-            <MovieSeriesList
-              items={items.filter((item) => item.type === "series" && item.status === "Посмотрели")}
-              onChangeStatus={handleChangeStatus}
-              canEdit={canEdit}
-            />
-          }
-        />
-        <Route
-          path="/history"
-          element={<WatchHistory items={items} />}
-        />
-        {canEdit && (
+      {isLoading ? (
+        <div className="loading">Загрузка...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : (
+        <Routes>
           <Route
-            path="/add"
+            path="/"
+            element={<HomePage items={items} />}
+          />
+          <Route
+            path="/movies"
             element={
-              <AddForm
-                onAddItem={handleAddItem}
-                error={error}
-                onErrorClear={() => setError(null)}
+              <MovieSeriesList
+                items={items.filter((item) => item.type === "movie")}
+                onChangeStatus={handleChangeStatus}
+                canEdit={canEdit}
               />
             }
           />
-        )}
-        <Route
-          path="/dev"
-          element={
-            <DevPage
-              items={items}
-              onAddItem={handleAddItem}
-              onChangeStatus={handleChangeStatus}
+          <Route
+            path="/series"
+            element={
+              <MovieSeriesList
+                items={items.filter((item) => item.type === "series")}
+                onChangeStatus={handleChangeStatus}
+                canEdit={canEdit}
+              />
+            }
+          />
+          <Route
+            path="/watched/movies"
+            element={
+              <MovieSeriesList
+                items={items.filter((item) => item.type === "movie" && item.status === "Посмотрели")}
+                onChangeStatus={handleChangeStatus}
+                canEdit={canEdit}
+              />
+            }
+          />
+          <Route
+            path="/watched/series"
+            element={
+              <MovieSeriesList
+                items={items.filter((item) => item.type === "series" && item.status === "Посмотрели")}
+                onChangeStatus={handleChangeStatus}
+                canEdit={canEdit}
+              />
+            }
+          />
+          <Route
+            path="/history"
+            element={<WatchHistory items={items} />}
+          />
+          {canEdit && (
+            <Route
+              path="/add"
+              element={
+                <AddForm
+                  onAddItem={handleAddItem}
+                  error={error}
+                  onErrorClear={() => setError(null)}
+                />
+              }
             />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <div style={{ padding: "1rem" }}>
-              <h2>Страница не найдена</h2>
-            </div>
-          }
-        />
-      </Routes>
+          )}
+          <Route
+            path="/dev"
+            element={
+              <DevPage
+                items={items}
+                onAddItem={handleAddItem}
+                onChangeStatus={handleChangeStatus}
+              />
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <div style={{ padding: "1rem" }}>
+                <h2>Страница не найдена</h2>
+              </div>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 }
