@@ -92,8 +92,6 @@ export default function App() {
 
   const handleAddItem = async (newItem) => {
     try {
-      console.log('Saving item with full data:', newItem);
-
       const { data, error } = await supabase
         .from('watchlist')
         .insert([{
@@ -108,13 +106,9 @@ export default function App() {
         }])
         .select();
 
-      if (error) {
-        console.error('Error saving to Supabase:', error);
-        throw error;
-      }
+      if (error) throw error;
 
       if (data) {
-        console.log('Successfully saved data:', data);
         setItems(prevItems => [data[0], ...prevItems]);
         navigate(newItem.type === 'movie' ? '/movies' : '/series');
       }

@@ -37,12 +37,13 @@ export default function AddForm({ onAddItem }) {
       title,
       type,
       status,
-      year: selectedItem?.year,
+      release_date: selectedItem?.release_date || null,
+      seasons_count: selectedItem?.seasons_count || null,
       genres: selectedItem?.genres || [],
-      countries: selectedItem?.countries || [],
-      poster: selectedItem?.poster
     };
 
+    console.log('Saving item with data:', newItem);
+    
     onAddItem(newItem);
     setTitle("");
     setType("movie");
@@ -52,7 +53,7 @@ export default function AddForm({ onAddItem }) {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    console.log('Selected suggestion:', suggestion); // Отладочный вывод
+    console.log('Selected suggestion:', suggestion);
     setTitle(suggestion.title);
     setType(suggestion.type);
     setSelectedItem(suggestion);
@@ -71,7 +72,7 @@ export default function AddForm({ onAddItem }) {
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
-                setSelectedItem(null); // Сбрасываем выбранный элемент при изменении ввода
+                setSelectedItem(null);
               }}
               placeholder="Введите минимум 2 символа..."
               className="search-input"
@@ -133,8 +134,10 @@ export default function AddForm({ onAddItem }) {
 
       {selectedItem && (
         <div className="selected-item-details">
-          <p>Год выпуска: {selectedItem.year || 'Нет данных'}</p>
-          <p>Страна: {selectedItem.countries?.length > 0 ? selectedItem.countries.join(', ') : 'Нет данных'}</p>
+          <p>Дата выхода: {selectedItem.release_date ? new Date(selectedItem.release_date).toLocaleDateString() : 'Нет данных'}</p>
+          {selectedItem.type === 'series' && (
+            <p>Количество сезонов: {selectedItem.seasons_count || 'Нет данных'}</p>
+          )}
           <p>Жанры: {selectedItem.genres?.length > 0 ? selectedItem.genres.join(', ') : 'Нет данных'}</p>
         </div>
       )}

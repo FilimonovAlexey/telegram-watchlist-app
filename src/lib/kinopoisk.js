@@ -25,14 +25,12 @@ export const searchKinopoisk = async (query) => {
     );
 
     if (!response.ok) {
-      throw new Error(`API error: ${response.status} - ${await response.text()}`);
+      throw new Error(`API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('API Response Data:', data);
 
     if (!data.docs || !data.docs.length) {
-      console.log('No results found');
       return [];
     }
 
