@@ -11,12 +11,16 @@ import DevPage from './components/DevPage';
 const ALLOWED_USER_IDS = [364609948, 222222222];
 
 export default function App() {
+  console.log('App component started rendering');
+  
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const canEdit = useCanEdit();
+  const canEdit = true; // Временно установим true для отладки
+
+  console.log('States initialized:', { items, error, isLoading, canEdit });
 
   function getTelegramUserId() {
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
@@ -29,13 +33,17 @@ export default function App() {
   }
 
   useEffect(() => {
+    console.log('Fetch effect started');
     const fetchItems = async () => {
       try {
+        console.log('Fetching items from Supabase...');
         setIsLoading(true);
         const { data, error: supabaseError } = await supabase
           .from('watchlist')
           .select('*')
           .order('created_at', { ascending: false });
+
+        console.log('Supabase response:', { data, error: supabaseError });
 
         if (supabaseError) throw supabaseError;
 
@@ -131,6 +139,13 @@ export default function App() {
       return false;
     }
   };
+
+  console.log('Before render:', { items, error, isLoading });
+
+  if (!supabase) {
+    console.error('Supabase client not initialized');
+    return <div>Error: Database connection not initialized</div>;
+  }
 
   return (
     <div className="app-container">
