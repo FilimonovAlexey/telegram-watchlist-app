@@ -56,6 +56,7 @@
   }
   
   .add-button {
+    width: 100%;
     background-color: #4CAF50;
     color: white;
   }
@@ -160,10 +161,13 @@
   }
 
   .see-more-link {
+    color: #2196F3;
     text-decoration: none;
-    color: #66b2ff;
-    font-weight: 500;
     font-size: 0.9rem;
+  }
+
+  .see-more-link:hover {
+    text-decoration: underline;
   }
 
   .empty-message {
@@ -580,4 +584,23 @@
   .item-poster,
   .movie-poster {
     position: relative;
+  }
+
+  .home-page {
+    padding: 1rem;
+  }
+
+  .category-section {
+    margin-bottom: 2rem;
+  }
+
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .category-section h2 {
+    margin: 0;
   }

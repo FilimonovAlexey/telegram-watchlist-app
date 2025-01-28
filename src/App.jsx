@@ -167,12 +167,7 @@ export default function App() {
         <Routes>
           <Route
             path="/"
-            element={
-              <div style={{ padding: "1rem" }}>
-                <h2>Добро пожаловать!</h2>
-                <p>Выберите раздел для просмотра</p>
-              </div>
-            }
+            element={<HomePage items={items} />}
           />
           <Route
             path="/add"

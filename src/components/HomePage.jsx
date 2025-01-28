@@ -3,66 +3,106 @@ import { Link } from "react-router-dom";
 
 export default function HomePage({ items }) {
   const movies = items
-    .filter((item) => item.type === "movie" && item.status !== "Посмотрели")
+    .filter((item) => item.type === "movie" && item.status !== "Удалить")
     .slice(0, 5);
   
   const series = items
-    .filter((item) => item.type === "series" && item.status !== "Посмотрели")
+    .filter((item) => item.type === "series" && item.status !== "Удалить")
     .slice(0, 5);
 
-  const hasMoreMovies = items.filter(
-    (item) => item.type === "movie" && item.status !== "Посмотрели"
-  ).length > 5;
+  const totalMovies = items.filter(
+    (item) => item.type === "movie" && item.status !== "Удалить"
+  ).length;
   
-  const hasMoreSeries = items.filter(
-    (item) => item.type === "series" && item.status !== "Посмотрели"
-  ).length > 5;
+  const totalSeries = items.filter(
+    (item) => item.type === "series" && item.status !== "Удалить"
+  ).length;
+
+  const handlePosterClick = (id) => {
+    window.open(`https://www.kinopoisk.ru/film/${id}`, "_blank");
+  };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <section>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div className="home-page">
+      <div className="category-section">
+        <div className="category-header">
           <h2>Фильмы</h2>
-          {hasMoreMovies && (
+          {totalMovies > 5 && (
             <Link to="/movies" className="see-more-link">
-              Ещё →
+              Ещё {totalMovies - 5} →
             </Link>
           )}
         </div>
         <ul className="item-list">
           {movies.map((item) => (
-            <li key={item.id} className="item">
-              <span className="title">{item.title}</span>
-              <span className="status-text">{item.status}</span>
+            <li key={item.id} className="item-card">
+              <div className="item-content">
+                {item.poster && (
+                  <div 
+                    className="item-poster clickable"
+                    onClick={() => handlePosterClick(item.id)}
+                    title="Открыть на Кинопоиске"
+                  >
+                    <img src={item.poster} alt={item.title} />
+                  </div>
+                )}
+                <div className="item-info">
+                  <div className="item-main">
+                    <span className="title">{item.title}</span>
+                    <span className="status-text">{item.status}</span>
+                  </div>
+                  <div className="item-details">
+                    {item.year && <span className="detail-item">📅 {item.year}</span>}
+                    {item.countries && item.countries.length > 0 && (
+                      <span className="detail-item">🌍 {item.countries.slice(0, 2).join(', ')}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
             </li>
           ))}
-          {movies.length === 0 && (
-            <li className="empty-message">Нет добавленных фильмов</li>
-          )}
         </ul>
-      </section>
+      </div>
 
-      <section style={{ marginTop: "2rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="category-section">
+        <div className="category-header">
           <h2>Сериалы</h2>
-          {hasMoreSeries && (
+          {totalSeries > 5 && (
             <Link to="/series" className="see-more-link">
-              Ещё →
+              Ещё {totalSeries - 5} →
             </Link>
           )}
         </div>
         <ul className="item-list">
           {series.map((item) => (
-            <li key={item.id} className="item">
-              <span className="title">{item.title}</span>
-              <span className="status-text">{item.status}</span>
+            <li key={item.id} className="item-card">
+              <div className="item-content">
+                {item.poster && (
+                  <div 
+                    className="item-poster clickable"
+                    onClick={() => handlePosterClick(item.id)}
+                    title="Открыть на Кинопоиске"
+                  >
+                    <img src={item.poster} alt={item.title} />
+                  </div>
+                )}
+                <div className="item-info">
+                  <div className="item-main">
+                    <span className="title">{item.title}</span>
+                    <span className="status-text">{item.status}</span>
+                  </div>
+                  <div className="item-details">
+                    {item.year && <span className="detail-item">📅 {item.year}</span>}
+                    {item.countries && item.countries.length > 0 && (
+                      <span className="detail-item">🌍 {item.countries.slice(0, 2).join(', ')}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
             </li>
           ))}
-          {series.length === 0 && (
-            <li className="empty-message">Нет добавленных сериалов</li>
-          )}
         </ul>
-      </section>
+      </div>
     </div>
   );
 } 
