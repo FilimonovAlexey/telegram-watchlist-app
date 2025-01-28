@@ -8,7 +8,7 @@ import HomePage from "./components/HomePage";
 import WatchHistory from "./components/WatchHistory";
 import DevPage from './components/DevPage';
 
-const ALLOWED_USER_IDS = [364609948, 222222222];
+const ALLOWED_USER_IDS = [364609948, 210529767];
 
 export default function App() {
   console.log('App component started rendering');
