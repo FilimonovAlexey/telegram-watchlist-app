@@ -92,7 +92,7 @@ export default function App() {
 
   const handleAddItem = async (newItem) => {
     try {
-      console.log('Saving item:', newItem);
+      console.log('Saving item with full data:', newItem);
 
       const { data, error } = await supabase
         .from('watchlist')
@@ -100,17 +100,21 @@ export default function App() {
           title: newItem.title,
           type: newItem.type,
           status: newItem.status,
-          release_date: newItem.release_date,
-          seasons_count: newItem.seasons_count,
+          year: newItem.year,
+          countries: newItem.countries,
           genres: newItem.genres,
+          poster: newItem.poster,
           created_at: new Date().toISOString()
         }])
         .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error saving to Supabase:', error);
+        throw error;
+      }
 
       if (data) {
-        console.log('Saved data:', data);
+        console.log('Successfully saved data:', data);
         setItems(prevItems => [data[0], ...prevItems]);
         navigate(newItem.type === 'movie' ? '/movies' : '/series');
       }
