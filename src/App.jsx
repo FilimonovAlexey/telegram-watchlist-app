@@ -15,6 +15,7 @@ export default function App() {
   const [items, setItems] = useState([]);
   const [userId, setUserId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   function getTelegramUserId() {
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
@@ -92,7 +93,18 @@ export default function App() {
 
   const handleAddItem = async (newItem) => {
     try {
-      const { data, error } = await supabase
+      // Проверяем на дубликаты
+      const isDuplicate = items.some(item => 
+        item.title.toLowerCase() === newItem.title.toLowerCase() && 
+        item.type === newItem.type
+      );
+
+      if (isDuplicate) {
+        setError(`${newItem.type === 'movie' ? 'Фильм' : 'Сериал'} "${newItem.title}" уже есть в вашем списке`);
+        return;
+      }
+
+      const { data, error: supabaseError } = await supabase
         .from('watchlist')
         .insert([{
           title: newItem.title,
@@ -106,14 +118,16 @@ export default function App() {
         }])
         .select();
 
-      if (error) throw error;
+      if (supabaseError) throw supabaseError;
 
       if (data) {
         setItems(prevItems => [data[0], ...prevItems]);
+        setError(null);
         navigate(newItem.type === 'movie' ? '/movies' : '/series');
       }
     } catch (error) {
       console.error('Error adding item:', error);
+      setError('Произошла ошибка при добавлении. Попробуйте позже.');
     }
   };
 
@@ -130,7 +144,7 @@ export default function App() {
   return (
     <div className="app-container">
       <Navigation canEdit={canEdit} />
-
+      {error && <div className="error-message">{error}</div>}
       <Routes>
         <Route
           path="/"
@@ -181,7 +195,16 @@ export default function App() {
           element={<WatchHistory items={items} />}
         />
         {canEdit && (
-          <Route path="/add" element={<AddForm onAddItem={handleAddItem} />} />
+          <Route
+            path="/add"
+            element={
+              <AddForm
+                onAddItem={handleAddItem}
+                error={error}
+                onErrorClear={() => setError(null)}
+              />
+            }
+          />
         )}
         <Route
           path="/dev"

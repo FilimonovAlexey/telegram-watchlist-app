@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { searchKinopoisk } from '../lib/kinopoisk';
 
-export default function AddForm({ onAddItem }) {
+export default function AddForm({ onAddItem, error, onErrorClear }) {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("movie");
   const [status, setStatus] = useState("Будем смотреть");
@@ -29,6 +29,12 @@ export default function AddForm({ onAddItem }) {
     return () => clearTimeout(searchTimeout);
   }, [title]);
 
+  useEffect(() => {
+    if (error) {
+      onErrorClear();
+    }
+  }, [title]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim()) return;
@@ -37,9 +43,10 @@ export default function AddForm({ onAddItem }) {
       title,
       type,
       status,
-      release_date: selectedItem?.release_date || null,
-      seasons_count: selectedItem?.seasons_count || null,
+      year: selectedItem?.year,
       genres: selectedItem?.genres || [],
+      countries: selectedItem?.countries || [],
+      poster: selectedItem?.poster
     };
 
     console.log('Saving item with data:', newItem);
@@ -63,6 +70,7 @@ export default function AddForm({ onAddItem }) {
   return (
     <div style={{ padding: "1rem" }}>
       <h2>Добавить Фильм/Сериал</h2>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit} className="add-form">
         <div className="search-container">
           <label>
